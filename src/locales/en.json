@@ -13,6 +13,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "newPatient": "New Patient",
+    "patientHistory": "History",
     "profile": "Profile",
     "logout": "Log Out"
   },
@@ -21,11 +22,15 @@
     "description": "Manage and analyze your patient data.",
     "addPatient": "Add New Patient",
     "patientListTitle": "Recent Patients",
+    "patientListDescription": "An overview of your most recent patient entries.",
     "patientName": "Patient Name",
     "age": "Age",
     "lastVisit": "Last Visit",
+    "status": "Status",
     "diagnosis": "AI Diagnosis",
-    "noPatients": "No patients found. Add a new patient to get started."
+    "noPatients": "No patients found. Add a new patient to get started.",
+    "viewPatient": "View Patient",
+    "editPatient": "Edit"
   },
   "newPatient": {
     "title": "Create New Patient Record",
@@ -112,6 +117,12 @@
     "changeAvatar": "Change Avatar",
     "selectAvatar": "Select an Avatar",
     "language": "Language"
+  },
+  "history": {
+    "title": "Patient History",
+    "description": "View the history of patient analyses.",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No recent activity to display."
   },
   "general": {
     "save": "Save",
