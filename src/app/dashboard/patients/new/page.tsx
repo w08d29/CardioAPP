@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {
@@ -17,7 +17,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card';
 import {
   Form,
@@ -35,7 +34,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Accordion,
@@ -44,42 +42,42 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Loader2, Sparkles } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
-import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const arterySchema = z.object({
-  LM: z.coerce.number().optional(),
-  LADprox: z.coerce.number().optional(),
-  LADmid: z.coerce.number().optional(),
-  LADdist: z.coerce.number().optional(),
-  D1: z.coerce.number().optional(),
-  D2: z.coerce.number().optional(),
-  LCxprox: z.coerce.number().optional(),
-  LCxdist: z.coerce.number().optional(),
-  OM1: z.coerce.number().optional(),
-  OM2: z.coerce.number().optional(),
-  RCAprox: z.coerce.number().optional(),
-  RCAmid: z.coerce.number().optional(),
-  RCAdist: z.coerce.number().optional(),
-  PDA: z.coerce.number().optional(),
-  PL: z.coerce.number().optional(),
+  LM: z.coerce.number().min(0).max(100).optional(),
+  LADprox: z.coerce.number().min(0).max(100).optional(),
+  LADmid: z.coerce.number().min(0).max(100).optional(),
+  LADdist: z.coerce.number().min(0).max(100).optional(),
+  D1: z.coerce.number().min(0).max(100).optional(),
+  D2: z.coerce.number().min(0).max(100).optional(),
+  LCxprox: z.coerce.number().min(0).max(100).optional(),
+  LCxdist: z.coerce.number().min(0).max(100).optional(),
+  OM1: z.coerce.number().min(0).max(100).optional(),
+  OM2: z.coerce.number().min(0).max(100).optional(),
+  RCAprox: z.coerce.number().min(0).max(100).optional(),
+  RCAmid: z.coerce.number().min(0).max(100).optional(),
+  RCAdist: z.coerce.number().min(0).max(100).optional(),
+  PDA: z.coerce.number().min(0).max(100).optional(),
+  PL: z.coerce.number().min(0).max(100).optional(),
 });
 
 const formSchema = z.object({
   coronaryAngiography: z.object({
     affectedArteries: arterySchema.optional(),
-    ejectionFraction: z.coerce.number().optional(),
+    ejectionFraction: z.coerce.number().min(0).max(100).optional(),
   }).optional(),
   echoCGData: z.object({
     globalContractility: z.enum(['Impaired', 'Not impaired']).optional(),
-    aorticStenosis: z.coerce.number().optional(),
-    aorticRegurgitation: z.coerce.number().optional(),
-    mitralStenosis: z.coerce.number().optional(),
-    mitralRegurgitation: z.coerce.number().optional(),
-    tricuspidStenosis: z.coerce.number().optional(),
-    tricuspidRegurgitation: z.coerce.number().optional(),
-    pulmonaryStenosis: z.coerce.number().optional(),
-    pulmonaryRegurgitation: z.coerce.number().optional(),
+    aorticStenosis: z.coerce.number().min(0).max(4).optional(),
+    aorticRegurgitation: z.coerce.number().min(0).max(4).optional(),
+    mitralStenosis: z.coerce.number().min(0).max(4).optional(),
+    mitralRegurgitation: z.coerce.number().min(0).max(4).optional(),
+    tricuspidStenosis: z.coerce.number().min(0).max(4).optional(),
+    tricuspidRegurgitation: z.coerce.number().min(0).max(4).optional(),
+    pulmonaryStenosis: z.coerce.number().min(0).max(4).optional(),
+    pulmonaryRegurgitation: z.coerce.number().min(0).max(4).optional(),
   }).optional(),
   bloodTests: z.object({
     completeBloodCount: z.object({
@@ -100,11 +98,17 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
+const lcaArteries: (keyof z.infer<typeof arterySchema>)[] = ['LM', 'LADprox', 'LADmid', 'LADdist', 'D1', 'D2', 'LCxprox', 'LCxdist', 'OM1', 'OM2'];
+const rcaArteries: (keyof z.infer<typeof arterySchema>)[] = ['RCAprox', 'RCAmid', 'RCAdist', 'PDA', 'PL'];
+const valves: ('aortic' | 'mitral' | 'tricuspid' | 'pulmonary')[] = ['aortic', 'mitral', 'tricuspid', 'pulmonary'];
+const cbcFields: (keyof z.infer<typeof formSchema>['bloodTests']['completeBloodCount'])[] = ['hemoglobin', 'redBloodCells', 'hematocrit', 'platelets', 'whiteBloodCells', 'ESR'];
+const cardiomarkerFields: (keyof z.infer<typeof formSchema>['bloodTests']['cardiomarkers'])[] = ['troponinT', 'creatineKinase', 'ckMB'];
+
 export default function NewPatientPage() {
   const { t, language } = useLocalization();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [analysisResult, setAnalysisResult] =
-    useState<AnalyzePatientDataOutput | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<AnalyzePatientDataOutput | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -126,8 +130,8 @@ export default function NewPatientPage() {
     } catch (error) {
       console.error('Error analyzing patient data:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to analyze patient data. Please try again.',
+        title: t('general.error'),
+        description: t('newPatient.analysisError'),
         variant: 'destructive',
       });
     } finally {
@@ -135,24 +139,17 @@ export default function NewPatientPage() {
     }
   }
 
-  const renderArteryFields = (arteryType: 'LCA' | 'RCA' | 'LCx') => {
-    const fields = {
-        LCA: ['LM', 'LADprox', 'LADmid', 'LADdist', 'D1', 'D2'],
-        LCx: ['LCxprox', 'LCxdist', 'OM1', 'OM2'],
-        RCA: ['RCAprox', 'RCAmid', 'RCAdist', 'PDA', 'PL'],
-    };
-    const fieldNames = fields[arteryType];
-
-    return fieldNames.map((fieldName) => (
+  const renderArteryFields = (arteryList: (keyof z.infer<typeof arterySchema>)[]) => {
+    return arteryList.map((fieldName) => (
       <FormField
         key={fieldName}
         control={form.control}
-        name={`coronaryAngiography.affectedArteries.${fieldName as keyof z.infer<typeof arterySchema>}`}
+        name={`coronaryAngiography.affectedArteries.${fieldName}`}
         render={({ field }) => (
-          <FormItem className="flex items-center gap-2 space-y-0">
-            <FormLabel className="w-20 min-w-[5rem] text-sm">{fieldName}</FormLabel>
+          <FormItem>
+            <FormLabel>{fieldName}</FormLabel>
             <FormControl>
-              <Input type="number" placeholder={t('newPatient.lesion')} {...field} onChange={e => field.onChange(e.target.valueAsNumber)} />
+              <Input type="number" placeholder={t('newPatient.lesion')} {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber)} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -162,59 +159,61 @@ export default function NewPatientPage() {
   };
   
   const renderValveFields = (valveName: 'aortic' | 'mitral' | 'tricuspid' | 'pulmonary') => {
-      const capitalizedValveName = valveName.charAt(0).toUpperCase() + valveName.slice(1);
       return (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField
-                  control={form.control}
-                  name={`echoCGData.${valveName}Stenosis`}
-                  render={({ field }) => (
-                  <FormItem>
-                      <FormLabel>{t(`newPatient.${valveName}`)} {t('newPatient.stenosis')}</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
-                          <FormControl>
-                              <SelectTrigger>
-                                  <SelectValue placeholder={t('newPatient.grade')} />
-                              </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                              {[0, 1, 2, 3, 4].map(grade => <SelectItem key={grade} value={String(grade)}>{grade}</SelectItem>)}
-                          </SelectContent>
-                      </Select>
-                      <FormMessage />
-                  </FormItem>
-                  )}
-              />
-              <FormField
-                  control={form.control}
-                  name={`echoCGData.${valveName}Regurgitation`}
-                  render={({ field }) => (
-                  <FormItem>
-                      <FormLabel>{t(`newPatient.${valveName}`)} {t('newPatient.regurgitation')}</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
-                          <FormControl>
-                              <SelectTrigger>
-                                  <SelectValue placeholder={t('newPatient.grade')} />
-                              </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                              {[0, 1, 2, 3, 4].map(grade => <SelectItem key={grade} value={String(grade)}>{grade}</SelectItem>)}
-                          </SelectContent>
-                      </Select>
-                      <FormMessage />
-                  </FormItem>
-                  )}
-              />
-          </div>
+        <Card key={valveName}>
+            <CardHeader>
+                <CardTitle className="text-lg">{t(`newPatient.${valveName}`)}</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormField
+                    control={form.control}
+                    name={`echoCGData.${valveName}Stenosis`}
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>{t('newPatient.stenosis')}</FormLabel>
+                        <Select onValueChange={value => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
+                            <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t('newPatient.grade')} />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                {[0, 1, 2, 3, 4].map(grade => <SelectItem key={grade} value={String(grade)}>{grade}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name={`echoCGData.${valveName}Regurgitation`}
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>{t('newPatient.regurgitation')}</FormLabel>
+                        <Select onValueChange={value => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
+                            <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t('newPatient.grade')} />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                {[0, 1, 2, 3, 4].map(grade => <SelectItem key={grade} value={String(grade)}>{grade}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+          </CardContent>
+        </Card>
       );
   };
   
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">
-          {t('newPatient.title')}
-        </h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t('newPatient.title')}</h1>
       </div>
       <Tabs defaultValue="emergency">
         <TabsList>
@@ -224,43 +223,48 @@ export default function NewPatientPage() {
         <TabsContent value="emergency">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <Accordion type="multiple" defaultValue={['item-1', 'item-2', 'item-3']} className="w-full">
-                <AccordionItem value="item-1">
+              <Accordion type="multiple" defaultValue={['coronary-angiography']} className="w-full">
+                <AccordionItem value="coronary-angiography">
                   <AccordionTrigger>{t('newPatient.coronaryAngiography')}</AccordionTrigger>
                   <AccordionContent className="space-y-4">
                     <Card>
                       <CardHeader><CardTitle className="text-lg">{t('newPatient.lca')}</CardTitle></CardHeader>
-                      <CardContent className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">{renderArteryFields('LCA')}</CardContent>
-                    </Card>
-                     <Card>
-                        <CardHeader><CardTitle className="text-lg">LCx</CardTitle></CardHeader>
-                        <CardContent className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">{renderArteryFields('LCx')}</CardContent>
+                      <CardContent className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">{renderArteryFields(lcaArteries)}</CardContent>
                     </Card>
                     <Card>
                       <CardHeader><CardTitle className="text-lg">{t('newPatient.rca')}</CardTitle></CardHeader>
-                      <CardContent className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">{renderArteryFields('RCA')}</CardContent>
+                      <CardContent className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">{renderArteryFields(rcaArteries)}</CardContent>
                     </Card>
                     <Card>
-                      <CardContent className="pt-6">
-                         <FormField
-                            control={form.control}
-                            name="coronaryAngiography.ejectionFraction"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>{t('newPatient.ef')}</FormLabel>
-                                <FormControl>
-                                    <Input type="number" {...field} onChange={e => field.onChange(e.target.valueAsNumber)}/>
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
+                        <CardContent className="pt-6">
+                            <FormField
+                                control={form.control}
+                                name="coronaryAngiography.ejectionFraction"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <FormLabel className="cursor-help">{t('newPatient.ef')}</FormLabel>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p className="whitespace-pre-line text-sm">{t('newPatient.efTooltip')}</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                        <FormControl>
+                                            <Input type="number" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber)} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
                             />
-                      </CardContent>
+                        </CardContent>
                     </Card>
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="item-2">
+                <AccordionItem value="echo-cg">
                     <AccordionTrigger>{t('newPatient.echoCG')}</AccordionTrigger>
                     <AccordionContent className="space-y-4">
                         <Card>
@@ -270,51 +274,45 @@ export default function NewPatientPage() {
                                     name="echoCGData.globalContractility"
                                     render={({ field }) => (
                                         <FormItem>
-                                        <FormLabel>{t('newPatient.globalContractility')}</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select..." />
-                                            </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Impaired">{t('newPatient.impaired')}</SelectItem>
-                                                <SelectItem value="Not impaired">{t('newPatient.notImpaired')}</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
+                                            <FormLabel>{t('newPatient.globalContractility')}</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder={t('newPatient.selectStatus')} />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="Impaired">{t('newPatient.impaired')}</SelectItem>
+                                                    <SelectItem value="Not impaired">{t('newPatient.notImpaired')}</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                {renderValveFields('aortic')}
-                                {renderValveFields('mitral')}
-                                {renderValveFields('tricuspid')}
-                                {renderValveFields('pulmonary')}
                             </CardContent>
                         </Card>
+                        {valves.map(renderValveFields)}
                     </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="item-3">
+                <AccordionItem value="blood-tests">
                     <AccordionTrigger>{t('newPatient.bloodTests')}</AccordionTrigger>
                     <AccordionContent className="space-y-4">
                         <Card>
                             <CardHeader><CardTitle className="text-lg">{t('newPatient.cbc')}</CardTitle></CardHeader>
-                            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField control={form.control} name="bloodTests.completeBloodCount.hemoglobin" render={({ field }) => (<FormItem><FormLabel>Hemoglobin</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(e.target.valueAsNumber)}/></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="bloodTests.completeBloodCount.redBloodCells" render={({ field }) => (<FormItem><FormLabel>Red Blood Cells</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(e.target.valueAsNumber)}/></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="bloodTests.completeBloodCount.hematocrit" render={({ field }) => (<FormItem><FormLabel>Hematocrit</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(e.target.valueAsNumber)}/></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="bloodTests.completeBloodCount.platelets" render={({ field }) => (<FormItem><FormLabel>Platelets</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(e.target.valueAsNumber)}/></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="bloodTests.completeBloodCount.whiteBloodCells" render={({ field }) => (<FormItem><FormLabel>White Blood Cells</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(e.target.valueAsNumber)}/></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="bloodTests.completeBloodCount.ESR" render={({ field }) => (<FormItem><FormLabel>ESR</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(e.target.valueAsNumber)}/></FormControl></FormItem>)} />
+                            <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {cbcFields.map(field => (
+                                    <FormField key={field} control={form.control} name={`bloodTests.completeBloodCount.${field}`} render={({ field: formField }) => (<FormItem><FormLabel>{t(`newPatient.cbcFields.${field}`)}</FormLabel><FormControl><Input type="number" {...formField} onChange={e => formField.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber)} /></FormControl><FormMessage /></FormItem>)} />
+                                ))}
                             </CardContent>
                         </Card>
                         <Card>
                              <CardHeader><CardTitle className="text-lg">{t('newPatient.cardiomarkers')}</CardTitle></CardHeader>
-                             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField control={form.control} name="bloodTests.cardiomarkers.troponinT" render={({ field }) => (<FormItem><FormLabel>Troponin T</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(e.target.valueAsNumber)}/></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="bloodTests.cardiomarkers.creatineKinase" render={({ field }) => (<FormItem><FormLabel>Creatine Kinase</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(e.target.valueAsNumber)}/></FormControl></FormItem>)} />
-                                <FormField control={form.control} name="bloodTests.cardiomarkers.ckMB" render={({ field }) => (<FormItem><FormLabel>CK-MB</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(e.target.valueAsNumber)}/></FormControl></FormItem>)} />
+                             <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {cardiomarkerFields.map(field => (
+                                     <FormField key={field} control={form.control} name={`bloodTests.cardiomarkers.${field}`} render={({ field: formField }) => (<FormItem><FormLabel>{t(`newPatient.cardiomarkerFields.${field}`)}</FormLabel><FormControl><Input type="number" {...formField} onChange={e => formField.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber)} /></FormControl><FormMessage /></FormItem>)} />
+                                ))}
                              </CardContent>
                         </Card>
                     </AccordionContent>

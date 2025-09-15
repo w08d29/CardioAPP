@@ -41,6 +41,7 @@
     "efTooltip": "> 55% - Normal\n45-54% - Mildly reduced\n30-44% - Moderately reduced\n< 30% - Severely reduced",
     "echoCG": "EchoCG Data",
     "globalContractility": "Global Contractility",
+    "selectStatus": "Select status...",
     "impaired": "Impaired",
     "notImpaired": "Not Impaired",
     "valves": "Valves",
@@ -53,15 +54,27 @@
     "pulmonary": "Pulmonary",
     "bloodTests": "Blood Tests",
     "cbc": "Complete Blood Count (CBC)",
-    "wbc": "WBC Differential",
-    "markers": "Additional Markers",
+    "cbcFields": {
+      "hemoglobin": "Hemoglobin (Hb, g/L)",
+      "redBloodCells": "Red Blood Cells (RBC, ×10¹²/L)",
+      "hematocrit": "Hematocrit (Ht, %)",
+      "platelets": "Platelets (PLT, ×10⁹/L)",
+      "whiteBloodCells": "White Blood Cells (WBC, ×10⁹/L)",
+      "ESR": "ESR (mm/h)"
+    },
     "cardiomarkers": "Cardiomarkers",
+    "cardiomarkerFields": {
+      "troponinT": "Troponin T (cTnT, ng/mL)",
+      "creatineKinase": "Creatine Kinase (CK, U/L)",
+      "ckMB": "CK-MB (U/L)"
+    },
     "parameter": "Parameter",
     "value": "Value",
     "normalRange": "Normal Range",
     "analyze": "Analyze Data",
     "analyzing": "Analyzing...",
     "aiResponse": "AI Analysis Result",
+    "analysisError": "Failed to analyze patient data. Please try again.",
     "diagnosis": "Diagnosis",
     "surgicalIntervention": "Surgical Intervention Required",
     "rationale": "Rationale",
@@ -85,6 +98,9 @@
   },
   "general": {
     "save": "Save",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "error": "Error"
   }
 }
+
+    
