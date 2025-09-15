@@ -8,7 +8,7 @@
     "passwordLabel": "Пароль",
     "button": "Войти",
     "loading": "Вход...",
-    "error": "Неверный email или пароль."
+    "error": "Неверный email."
   },
   "nav": {
     "dashboard": "Панель",
