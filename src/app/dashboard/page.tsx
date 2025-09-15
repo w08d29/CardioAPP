@@ -32,8 +32,7 @@ type Patient = {
 };
 
 const getPatients = async (): Promise<Patient[]> => {
-    // In a real application, this would fetch data from an API.
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 500)); 
     return [
         { id: 1, name: 'Michael Williams', lastVisit: '2025-08-02', diagnosis: 'Arrhythmia', status: 'Analyzed' },
     ];
@@ -69,7 +68,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between gap-8 flex-col">
+      <div className="flex items-center justify-between gap-8 flex-col text-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.title')}</h1>
           <p className="text-muted-foreground">{t('dashboard.description')}</p>
