@@ -84,9 +84,22 @@ const formSchema = z.object({
       hemoglobin: z.coerce.number().optional(),
       redBloodCells: z.coerce.number().optional(),
       hematocrit: z.coerce.number().optional(),
+      colorIndex: z.coerce.number().optional(),
+      meanCorpuscularVolume: z.coerce.number().optional(),
       platelets: z.coerce.number().optional(),
       whiteBloodCells: z.coerce.number().optional(),
+    }).optional(),
+    wbcDifferential: z.object({
+      bandNeutrophils: z.coerce.number().optional(),
+      segmentedNeutrophils: z.coerce.number().optional(),
+      eosinophils: z.coerce.number().optional(),
+      basophils: z.coerce.number().optional(),
+      lymphocytes: z.coerce.number().optional(),
+      monocytes: z.coerce.number().optional(),
+    }).optional(),
+    additionalMarkers: z.object({
       ESR: z.coerce.number().optional(),
+      reticulocytes: z.coerce.number().optional(),
     }).optional(),
     cardiomarkers: z.object({
       troponinT: z.coerce.number().optional(),
@@ -101,7 +114,9 @@ type FormData = z.infer<typeof formSchema>;
 const lcaArteries: (keyof z.infer<typeof arterySchema>)[] = ['LM', 'LADprox', 'LADmid', 'LADdist', 'D1', 'D2', 'LCxprox', 'LCxdist', 'OM1', 'OM2'];
 const rcaArteries: (keyof z.infer<typeof arterySchema>)[] = ['RCAprox', 'RCAmid', 'RCAdist', 'PDA', 'PL'];
 const valves: ('aortic' | 'mitral' | 'tricuspid' | 'pulmonary')[] = ['aortic', 'mitral', 'tricuspid', 'pulmonary'];
-const cbcFields: (keyof z.infer<typeof formSchema>['bloodTests']['completeBloodCount'])[] = ['hemoglobin', 'redBloodCells', 'hematocrit', 'platelets', 'whiteBloodCells', 'ESR'];
+const cbcFields: (keyof z.infer<typeof formSchema>['bloodTests']['completeBloodCount'])[] = ['hemoglobin', 'redBloodCells', 'hematocrit', 'colorIndex', 'meanCorpuscularVolume', 'platelets', 'whiteBloodCells'];
+const wbcFields: (keyof z.infer<typeof formSchema>['bloodTests']['wbcDifferential'])[] = ['bandNeutrophils', 'segmentedNeutrophils', 'eosinophils', 'basophils', 'lymphocytes', 'monocytes'];
+const additionalMarkerFields: (keyof z.infer<typeof formSchema>['bloodTests']['additionalMarkers'])[] = ['ESR', 'reticulocytes'];
 const cardiomarkerFields: (keyof z.infer<typeof formSchema>['bloodTests']['cardiomarkers'])[] = ['troponinT', 'creatineKinase', 'ckMB'];
 
 export default function NewPatientPage() {
@@ -304,6 +319,22 @@ export default function NewPatientPage() {
                             <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {cbcFields.map(field => (
                                     <FormField key={field} control={form.control} name={`bloodTests.completeBloodCount.${field}`} render={({ field: formField }) => (<FormItem><FormLabel>{t(`newPatient.cbcFields.${field}`)}</FormLabel><FormControl><Input type="number" {...formField} onChange={e => formField.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber)} /></FormControl><FormMessage /></FormItem>)} />
+                                ))}
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader><CardTitle className="text-lg">{t('newPatient.wbcDifferential')}</CardTitle></CardHeader>
+                            <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {wbcFields.map(field => (
+                                    <FormField key={field} control={form.control} name={`bloodTests.wbcDifferential.${field}`} render={({ field: formField }) => (<FormItem><FormLabel>{t(`newPatient.wbcDifferentialFields.${field}`)}</FormLabel><FormControl><Input type="number" {...formField} onChange={e => formField.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber)} /></FormControl><FormMessage /></FormItem>)} />
+                                ))}
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader><CardTitle className="text-lg">{t('newPatient.additionalMarkers')}</CardTitle></CardHeader>
+                            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {additionalMarkerFields.map(field => (
+                                    <FormField key={field} control={form.control} name={`bloodTests.additionalMarkers.${field}`} render={({ field: formField }) => (<FormItem><FormLabel>{t(`newPatient.additionalMarkerFields.${field}`)}</FormLabel><FormControl><Input type="number" {...formField} onChange={e => formField.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber)} /></FormControl><FormMessage /></FormItem>)} />
                                 ))}
                             </CardContent>
                         </Card>

@@ -54,13 +54,28 @@
     "pulmonary": "Легочный",
     "bloodTests": "Анализы крови",
     "cbc": "Общий анализ крови (ОАК)",
+    "wbcDifferential": "Лейкоцитарная формула",
+    "additionalMarkers": "Дополнительные маркеры",
     "cbcFields": {
       "hemoglobin": "Гемоглобин (Hb, г/л)",
       "redBloodCells": "Эритроциты (RBC, ×10¹²/л)",
       "hematocrit": "Гематокрит (Ht, %)",
+      "colorIndex": "Цветовой показатель (MCH, MCHC)",
+      "meanCorpuscularVolume": "Средний объем эритроцитов (MCV, фл)",
       "platelets": "Тромбоциты (PLT, ×10⁹/л)",
-      "whiteBloodCells": "Лейкоциты (WBC, ×10⁹/л)",
-      "ESR": "СОЭ (мм/ч)"
+      "whiteBloodCells": "Лейкоциты (WBC, ×10⁹/л)"
+    },
+    "wbcDifferentialFields": {
+      "bandNeutrophils": "Палочкоядерные нейтрофилы (%)",
+      "segmentedNeutrophils": "Сегментоядерные нейтрофилы (%)",
+      "eosinophils": "Эозинофилы (%)",
+      "basophils": "Базофилы (%)",
+      "lymphocytes": "Лимфоциты (%)",
+      "monocytes": "Моноциты (%)"
+    },
+    "additionalMarkerFields": {
+      "ESR": "СОЭ (мм/ч)",
+      "reticulocytes": "Ретикулоциты (%)"
     },
     "cardiomarkers": "Кардиомаркеры",
     "cardiomarkerFields": {

@@ -54,14 +54,20 @@ const BloodCountSchema = z.object({
   meanCorpuscularVolume: z.number().optional().describe('Mean corpuscular volume (MCV) (fL)'),
   platelets: z.number().optional().describe('Platelets (PLT) count (×10⁹/L)'),
   whiteBloodCells: z.number().optional().describe('White blood cells (WBC) count (×10⁹/L)'),
-  bandNeutrophils: z.number().optional().describe('Band neutrophils (%)'),
-  segmentedNeutrophils: z.number().optional().describe('Segmented neutrophils (%)'),
-  eosinophils: z.number().optional().describe('Eosinophils (%)'),
-  basophils: z.number().optional().describe('Basophils (%)'),
-  lymphocytes: z.number().optional().describe('Lymphocytes (%)'),
-  monocytes: z.number().optional().describe('Monocytes (%)'),
-  ESR: z.number().optional().describe('Erythrocyte sedimentation rate (ESR) (mm/h)'),
-  reticulocytes: z.number().optional().describe('Reticulocytes (%)'),
+});
+
+const WBCDifferentialSchema = z.object({
+    bandNeutrophils: z.number().optional().describe('Band neutrophils (%)'),
+    segmentedNeutrophils: z.number().optional().describe('Segmented neutrophils (%)'),
+    eosinophils: z.number().optional().describe('Eosinophils (%)'),
+    basophils: z.number().optional().describe('Basophils (%)'),
+    lymphocytes: z.number().optional().describe('Lymphocytes (%)'),
+    monocytes: z.number().optional().describe('Monocytes (%)'),
+});
+
+const AdditionalMarkersSchema = z.object({
+    ESR: z.number().optional().describe('Erythrocyte sedimentation rate (ESR) (mm/h)'),
+    reticulocytes: z.number().optional().describe('Reticulocytes (%)'),
 });
 
 const CardioMarkersSchema = z.object({
@@ -72,6 +78,8 @@ const CardioMarkersSchema = z.object({
 
 const BloodTestsSchema = z.object({
   completeBloodCount: BloodCountSchema.optional().describe('Complete blood count (CBC / OAK) parameters'),
+  wbcDifferential: WBCDifferentialSchema.optional().describe('WBC differential parameters'),
+  additionalMarkers: AdditionalMarkersSchema.optional().describe('Additional markers'),
   cardiomarkers: CardioMarkersSchema.optional().describe('Cardiomarker levels'),
 });
 
@@ -142,11 +150,30 @@ Blood Test Results:
     Hemoglobin: {{bloodTests.completeBloodCount.hemoglobin}} g/L
     Red Blood Cells: {{bloodTests.completeBloodCount.redBloodCells}} ×10¹²/L
     Hematocrit: {{bloodTests.completeBloodCount.hematocrit}}%
+    Color Index: {{bloodTests.completeBloodCount.colorIndex}}
+    Mean Corpuscular Volume: {{bloodTests.completeBloodCount.meanCorpuscularVolume}} fL
     Platelets: {{bloodTests.completeBloodCount.platelets}} ×10⁹/L
     White Blood Cells: {{bloodTests.completeBloodCount.whiteBloodCells}} ×10⁹/L
-    ESR: {{bloodTests.completeBloodCount.ESR}} mm/h
   {{else}}
     No complete blood count data provided.
+  {{/if}}
+  WBC Differential:
+  {{#if bloodTests.wbcDifferential}}
+    Band Neutrophils: {{bloodTests.wbcDifferential.bandNeutrophils}}%
+    Segmented Neutrophils: {{bloodTests.wbcDifferential.segmentedNeutrophils}}%
+    Eosinophils: {{bloodTests.wbcDifferential.eosinophils}}%
+    Basophils: {{bloodTests.wbcDifferential.basophils}}%
+    Lymphocytes: {{bloodTests.wbcDifferential.lymphocytes}}%
+    Monocytes: {{bloodTests.wbcDifferential.monocytes}}%
+  {{else}}
+    No WBC differential data provided.
+  {{/if}}
+  Additional Markers:
+  {{#if bloodTests.additionalMarkers}}
+    ESR: {{bloodTests.additionalMarkers.ESR}} mm/h
+    Reticulocytes: {{bloodTests.additionalMarkers.reticulocytes}}%
+  {{else}}
+    No additional marker data provided.
   {{/if}}
   Cardiomarkers:
   {{#if bloodTests.cardiomarkers}}

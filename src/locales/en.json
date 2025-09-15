@@ -54,13 +54,28 @@
     "pulmonary": "Pulmonary",
     "bloodTests": "Blood Tests",
     "cbc": "Complete Blood Count (CBC)",
+    "wbcDifferential": "WBC Differential",
+    "additionalMarkers": "Additional Markers",
     "cbcFields": {
       "hemoglobin": "Hemoglobin (Hb, g/L)",
       "redBloodCells": "Red Blood Cells (RBC, ×10¹²/L)",
       "hematocrit": "Hematocrit (Ht, %)",
+      "colorIndex": "Color Index (MCH, MCHC)",
+      "meanCorpuscularVolume": "Mean Corpuscular Volume (MCV, fL)",
       "platelets": "Platelets (PLT, ×10⁹/L)",
-      "whiteBloodCells": "White Blood Cells (WBC, ×10⁹/L)",
-      "ESR": "ESR (mm/h)"
+      "whiteBloodCells": "White Blood Cells (WBC, ×10⁹/L)"
+    },
+    "wbcDifferentialFields": {
+      "bandNeutrophils": "Band Neutrophils (%)",
+      "segmentedNeutrophils": "Segmented Neutrophils (%)",
+      "eosinophils": "Eosinophils (%)",
+      "basophils": "Basophils (%)",
+      "lymphocytes": "Lymphocytes (%)",
+      "monocytes": "Monocytes (%)"
+    },
+    "additionalMarkerFields": {
+      "ESR": "ESR (mm/h)",
+      "reticulocytes": "Reticulocytes (%)"
     },
     "cardiomarkers": "Cardiomarkers",
     "cardiomarkerFields": {
