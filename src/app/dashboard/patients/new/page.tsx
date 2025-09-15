@@ -44,6 +44,7 @@ import {
 import { Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Textarea } from '@/components/ui/textarea';
 
 const arterySchema = z.object({
   LM: z.coerce.number().min(0).max(100).optional(),
@@ -64,6 +65,7 @@ const arterySchema = z.object({
 });
 
 const formSchema = z.object({
+  chronicDiseases: z.string().optional(),
   coronaryAngiography: z.object({
     affectedArteries: arterySchema.optional(),
     ejectionFraction: z.coerce.number().min(0).max(100).optional(),
@@ -205,7 +207,7 @@ export default function NewPatientPage() {
                     name={`echoCGData.${valveName}Regurgitation`}
                     render={({ field }) => (
                     <FormItem>
-                        <FormLabel>{t('newPatient.regurgitation')}</FormLabel>
+                        <FormLabel>{t('newPatient.failure')}</FormLabel>
                         <Select onValueChange={value => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
                             <FormControl>
                                 <SelectTrigger>
@@ -238,7 +240,30 @@ export default function NewPatientPage() {
         <TabsContent value="emergency">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <Accordion type="multiple" defaultValue={['coronary-angiography']} className="w-full">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('newPatient.chronicDiseases')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <FormField
+                    control={form.control}
+                    name="chronicDiseases"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Textarea
+                            placeholder={t('newPatient.chronicDiseasesPlaceholder')}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+
+              <Accordion type="multiple" defaultValue={[]} className="w-full">
                 <AccordionItem value="coronary-angiography">
                   <AccordionTrigger>{t('newPatient.coronaryAngiography')}</AccordionTrigger>
                   <AccordionContent className="space-y-4">

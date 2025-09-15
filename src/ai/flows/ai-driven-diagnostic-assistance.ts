@@ -84,6 +84,7 @@ const BloodTestsSchema = z.object({
 });
 
 const AnalyzePatientDataInputSchema = z.object({
+  chronicDiseases: z.string().optional().describe('A list of chronic diseases the patient has.'),
   coronaryAngiography: CoronaryAngiographySchema.optional().describe('Coronary angiography data'),
   echoCGData: EchoCGDataSchema.optional().describe('Echo CG data'),
   bloodTests: BloodTestsSchema.optional().describe('Blood test results'),
@@ -112,6 +113,13 @@ const prompt = ai.definePrompt({
 
 Analyze the following patient data to determine a likely diagnosis and assess the necessity for surgical intervention.
 Provide a clear rationale for your assessment. Respond in {{{language}}}.
+
+Chronic Diseases:
+{{#if chronicDiseases}}
+  {{chronicDiseases}}
+{{else}}
+  No chronic diseases provided.
+{{/if}}
 
 Coronary Angiography Data:
 {{#if coronaryAngiography}}
