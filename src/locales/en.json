@@ -3,12 +3,12 @@
   "login": {
     "title": "Welcome to CardioArt",
     "description": "Sign in to access your AI-powered cardiac assistant.",
-    "emailLabel": "Email",
-    "emailPlaceholder": "name@example.com",
+    "loginLabel": "Login",
+    "loginPlaceholder": "Enter your login",
     "passwordLabel": "Password",
     "button": "Sign In",
     "loading": "Signing in...",
-    "error": "Invalid email."
+    "error": "Invalid login or password."
   },
   "nav": {
     "dashboard": "Dashboard",

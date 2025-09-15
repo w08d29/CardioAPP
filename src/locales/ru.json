@@ -3,12 +3,12 @@
   "login": {
     "title": "Добро пожаловать в CardioArt",
     "description": "Войдите, чтобы получить доступ к вашему кардиологическому ИИ-ассистенту.",
-    "emailLabel": "Электронная почта",
-    "emailPlaceholder": "name@example.com",
+    "loginLabel": "Логин",
+    "loginPlaceholder": "Введите ваш логин",
     "passwordLabel": "Пароль",
     "button": "Войти",
     "loading": "Вход...",
-    "error": "Неверный email."
+    "error": "Неверный логин или пароль."
   },
   "nav": {
     "dashboard": "Панель",

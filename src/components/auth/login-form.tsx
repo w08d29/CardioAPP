@@ -22,8 +22,8 @@ import { Loader2 } from 'lucide-react';
 import { useLocalization } from '@/context/localization-context';
 
 const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
+  login: z.string().min(1),
+  password: z.string().min(1),
 });
 
 export function LoginForm() {
@@ -35,7 +35,7 @@ export function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      login: '',
       password: '',
     },
   });
@@ -45,10 +45,17 @@ export function LoginForm() {
     // Mock authentication
     await new Promise((resolve) => setTimeout(resolve, 1000));
     
-    if ((values.email === 'user@cardio.art' && values.password === 'password') || (values.email === 'root' && values.password === 'Zxasqw12#')) {
-      // In a real app, you'd get a token from the server
-      const is_admin = values.email === 'root';
-      const user = { email: values.email, name: is_admin ? 'Admin' : 'Dr. Smith', avatar: 'https://picsum.photos/seed/avatar1/200/200', is_admin };
+    let user = null;
+
+    if (values.login === 'root' && values.password === 'Zxasqw12#') {
+      user = { email: 'root@cardio.art', name: 'Admin', avatar: 'https://picsum.photos/seed/avatar1/200/200', is_admin: true };
+    } else if (values.login === 'user' && values.password === 'password') {
+        user = { email: 'user@cardio.art', name: 'Dr. Smith', avatar: 'https://picsum.photos/seed/avatar2/200/200', is_admin: false };
+    } else if (values.login === 'Test' && values.password === 'Test') {
+        user = { email: 'test@cardio.art', name: 'Test User', avatar: 'https://picsum.photos/seed/avatar3/200/200', is_admin: false };
+    }
+
+    if (user) {
       localStorage.setItem('cardioart_user', JSON.stringify(user));
       router.push('/dashboard');
     } else {
@@ -72,12 +79,12 @@ export function LoginForm() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="email"
+              name="login"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('login.emailLabel')}</FormLabel>
+                  <FormLabel>{t('login.loginLabel')}</FormLabel>
                   <FormControl>
-                    <Input placeholder={t('login.emailPlaceholder')} {...field} />
+                    <Input placeholder={t('login.loginPlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
