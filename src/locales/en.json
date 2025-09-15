@@ -46,7 +46,7 @@
     "notImpaired": "Not Impaired",
     "valves": "Valves",
     "stenosis": "Stenosis",
-    "regurgitation": "Regurgitation",
+    "regurgitation": "Failure",
     "grade": "Grade",
     "aortic": "Aortic",
     "mitral": "Mitral",
@@ -102,5 +102,3 @@
     "error": "Error"
   }
 }
-
-    
