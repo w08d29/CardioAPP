@@ -124,13 +124,13 @@ Echo CG Data:
 {{#if echoCGData}}
   Global Contractility: {{echoCGData.globalContractility}}
   Aortic Stenosis: {{echoCGData.aorticStenosis}}
-  Aortic Regurgitation (Insufficiency): {{echoCGData.aorticRegurgitation}}
+  Aortic Regurgitation (Insufficiency / Недостаточность): {{echoCGData.aorticRegurgitation}}
   Mitral Stenosis: {{echoCGData.mitralStenosis}}
-  Mitral Regurgitation (Insufficiency): {{echoCGData.mitralRegurgitation}}
+  Mitral Regurgitation (Insufficiency / Недостаточность): {{echoCGData.mitralRegurgitation}}
   Tricuspid Stenosis: {{echoCGData.tricuspidStenosis}}
-  Tricuspid Regurgitation (Insufficiency): {{echoCGData.tricuspidRegurgitation}}
+  Tricuspid Regurgitation (Insufficiency / Недостаточность): {{echoCGData.tricuspidRegurgitation}}
   Pulmonary Stenosis: {{echoCGData.pulmonaryStenosis}}
-  Pulmonary Regurgitation (Insufficiency): {{echoCGData.pulmonaryRegurgitation}}
+  Pulmonary Regurgitation (Insufficiency / Недостаточность): {{echoCGData.pulmonaryRegurgitation}}
 {{else}}
   No Echo CG data provided.
 {{/if}}
