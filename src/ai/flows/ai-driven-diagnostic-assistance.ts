@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI-driven diagnostic assistance flow for heart vessel conditions.
@@ -36,13 +37,13 @@ const CoronaryAngiographySchema = z.object({
 const EchoCGDataSchema = z.object({
   globalContractility: z.enum(['Impaired', 'Not impaired']).optional().describe('Global contractility assessment.'),
   aorticStenosis: z.number().optional().describe('Aortic valve stenosis grade (0-4)'),
-  aorticRegurgitation: z.number().optional().describe('Aortic valve regurgitation grade (0-4)'),
+  aorticRegurgitation: z.number().optional().describe('Aortic valve regurgitation (insufficiency) grade (0-4)'),
   mitralStenosis: z.number().optional().describe('Mitral valve stenosis grade (0-4)'),
-  mitralRegurgitation: z.number().optional().describe('Mitral valve regurgitation grade (0-4)'),
+  mitralRegurgitation: z.number().optional().describe('Mitral valve regurgitation (insufficiency) grade (0-4)'),
   tricuspidStenosis: z.number().optional().describe('Tricuspid valve stenosis grade (0-4)'),
-  tricuspidRegurgitation: z.number().optional().describe('Tricuspid valve regurgitation grade (0-4)'),
+  tricuspidRegurgitation: z.number().optional().describe('Tricuspid valve regurgitation (insufficiency) grade (0-4)'),
   pulmonaryStenosis: z.number().optional().describe('Pulmonary valve stenosis grade (0-4)'),
-  pulmonaryRegurgitation: z.number().optional().describe('Pulmonary valve regurgitation grade (0-4)'),
+  pulmonaryRegurgitation: z.number().optional().describe('Pulmonary valve regurgitation (insufficiency) grade (0-4)'),
 });
 
 const BloodCountSchema = z.object({
@@ -123,13 +124,13 @@ Echo CG Data:
 {{#if echoCGData}}
   Global Contractility: {{echoCGData.globalContractility}}
   Aortic Stenosis: {{echoCGData.aorticStenosis}}
-  Aortic Regurgitation: {{echoCGData.aorticRegurgitation}}
+  Aortic Regurgitation (Insufficiency): {{echoCGData.aorticRegurgitation}}
   Mitral Stenosis: {{echoCGData.mitralStenosis}}
-  Mitral Regurgitation: {{echoCGData.mitralRegurgitation}}
+  Mitral Regurgitation (Insufficiency): {{echoCGData.mitralRegurgitation}}
   Tricuspid Stenosis: {{echoCGData.tricuspidStenosis}}
-  Tricuspid Regurgitation: {{echoCGData.tricuspidRegurgitation}}
+  Tricuspid Regurgitation (Insufficiency): {{echoCGData.tricuspidRegurgitation}}
   Pulmonary Stenosis: {{echoCGData.pulmonaryStenosis}}
-  Pulmonary Regurgitation: {{echoCGData.pulmonaryRegurgitation}}
+  Pulmonary Regurgitation (Insufficiency): {{echoCGData.pulmonaryRegurgitation}}
 {{else}}
   No Echo CG data provided.
 {{/if}}
