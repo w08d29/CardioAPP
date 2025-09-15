@@ -35,7 +35,7 @@ const getPatients = async (): Promise<Patient[]> => {
     // In a real application, this would fetch data from an API.
     await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
     return [
-        { id: 1, name: 'Michael Williams', lastVisit: '2024-07-05', diagnosis: 'Arrhythmia', status: 'Analyzed' },
+        { id: 1, name: 'Michael Williams', lastVisit: '2025-08-02', diagnosis: 'Arrhythmia', status: 'Analyzed' },
     ];
 }
 
